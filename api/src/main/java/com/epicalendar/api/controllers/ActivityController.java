@@ -19,7 +19,6 @@ import net.fortuna.ical4j.model.property.Uid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,9 +45,7 @@ public class ActivityController {
 
     @GetMapping("/{userMail}")
     @Operation(summary = "Get all registrations for a user in a given time frame", parameters = {
-            @Parameter(name = "userMail", description = "User mail", required = true),
-            @Parameter(name = "startDate", description = "Start date of the time frame (timestamp)", required = true),
-            @Parameter(name = "endDate", description = "End date of the time frame (timestamp)", required = true)
+            @Parameter(name = "userMail", description = "User mail", required = true)
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registration found", content = {
@@ -57,13 +54,8 @@ public class ActivityController {
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
             @ApiResponse(responseCode = "404", description = "Registrations not found", content = @Content)
     })
-    public ResponseEntity<List<Integer>> getActivities(@PathVariable String userMail, @RequestParam Long startDate, @RequestParam Long endDate) {
-        if (startDate == null || endDate == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        Date start = new Date(startDate);
-        Date end = new Date(endDate);
-        List<Activity> activities = activityRepository.findAllByMailAndStartDateAfterAndEndDateBefore(userMail, start, end);
+    public ResponseEntity<List<Integer>> getActivities(@PathVariable String userMail) {
+        List<Activity> activities = activityRepository.findAllByMail(userMail);
         if (activities.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(activities.stream().map(Activity::getId).collect(Collectors.toList()));
