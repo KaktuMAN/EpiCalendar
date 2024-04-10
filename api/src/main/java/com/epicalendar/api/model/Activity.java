@@ -38,8 +38,8 @@ public class Activity {
         this.mail = activity.getMail();
         this.title = activity.getTitle();
         this.room = activity.getRoom();
-        this.startDate = new Date(Long.parseLong(activity.getStartDate()));
-        this.endDate = new Date(Long.parseLong(activity.getEndDate()));
+        this.startDate = new Date(activity.getStartDate());
+        this.endDate = new Date(activity.getEndDate());
     }
 
     public int getId() {
