@@ -12,6 +12,9 @@ public class Activity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "event_id")
+    private int eventId;
+
     @Column(name = "mail")
     private String mail;
 
@@ -31,6 +34,7 @@ public class Activity {
     }
 
     public Activity(PostActivity activity) {
+        this.eventId = activity.getEventId();
         this.mail = activity.getMail();
         this.title = activity.getTitle();
         this.room = activity.getRoom();
@@ -40,6 +44,10 @@ public class Activity {
 
     public int getId() {
         return id;
+    }
+
+    public int getEventId() {
+        return eventId;
     }
 
     public String getMail() {

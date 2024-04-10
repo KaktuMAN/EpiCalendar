@@ -1,18 +1,24 @@
 package com.epicalendar.api.model.dto;
 
 public class PostActivity {
+    private final int eventId;
     private final String mail;
     private final String title;
     private final String room;
     private final String startDate;
     private final String endDate;
 
-    public PostActivity(String mail, String title, String room, String startDate, String endDate) {
+    public PostActivity(int eventId, String mail, String title, String room, String startDate, String endDate) {
+        this.eventId = eventId;
         this.mail = mail;
         this.title = title;
         this.room = room;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public int getEventId() {
+        return eventId;
     }
 
     public String getMail() {

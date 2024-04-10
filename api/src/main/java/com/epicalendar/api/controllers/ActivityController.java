@@ -1,7 +1,6 @@
 package com.epicalendar.api.controllers;
 
 import com.epicalendar.api.model.Activity;
-import com.epicalendar.api.model.dto.FullActivity;
 import com.epicalendar.api.model.dto.PostActivity;
 import com.epicalendar.api.repository.ActivityRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,19 +52,21 @@ public class ActivityController {
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registration found", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FullActivity.class)))
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = int.class)))
             }),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
             @ApiResponse(responseCode = "404", description = "Registrations not found", content = @Content)
     })
-    public ResponseEntity<List<FullActivity>> getActivities(@PathVariable String userMail, @RequestParam Long startDate, @RequestParam Long endDate) {
+    public ResponseEntity<List<Integer>> getActivities(@PathVariable String userMail, @RequestParam Long startDate, @RequestParam Long endDate) {
         if (startDate == null || endDate == null) {
             return ResponseEntity.badRequest().build();
         }
         Date start = new Date(startDate);
         Date end = new Date(endDate);
         List<Activity> activities = activityRepository.findAllByMailAndStartDateAfterAndEndDateBefore(userMail, start, end);
-        return ResponseEntity.ok(activities.stream().map(FullActivity::new).collect(Collectors.toList()));
+        if (activities.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(activities.stream().map(Activity::getId).collect(Collectors.toList()));
     }
 
     @GetMapping("/calendar/{userMail}/ical")
