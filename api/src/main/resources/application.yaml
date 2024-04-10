@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_IP}:${POSTGRES_PORT}/epicalendar
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
