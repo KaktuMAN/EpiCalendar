@@ -34,7 +34,7 @@ public class ActivityController {
         this.activityRepository = activityRepository;
     }
 
-    @PostMapping("/activity")
+    @PostMapping("/")
     @Operation(summary = "Add a new registration to the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = PostActivity.class))))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registration added", content = @Content(schema = @Schema(implementation = int.class))),
@@ -44,7 +44,7 @@ public class ActivityController {
         return ResponseEntity.ok(activityRepository.save(new Activity(activity)).getId());
     }
 
-    @GetMapping("/activity/{userMail}")
+    @GetMapping("/{userMail}")
     @Operation(summary = "Get all registrations for a user in a given time frame", parameters = {
             @Parameter(name = "userMail", description = "User mail", required = true),
             @Parameter(name = "startDate", description = "Start date of the time frame (timestamp)", required = true),
@@ -69,7 +69,7 @@ public class ActivityController {
         return ResponseEntity.ok(activities.stream().map(Activity::getId).collect(Collectors.toList()));
     }
 
-    @GetMapping("/calendar/{userMail}/ical")
+    @GetMapping("/{userMail}/ical")
     @Operation(summary = "Get an iCal file with all registrations for a user", parameters = {
             @Parameter(name = "userMail", description = "User mail", required = true)
     })
@@ -86,7 +86,7 @@ public class ActivityController {
             DateTime startDate = new DateTime(activity.getStartDate());
             DateTime endDate = new DateTime(activity.getEndDate());
             VEvent event = new VEvent(startDate, endDate, activity.getTitle());
-            Uid uid = new Uid(activity.getMail() + "-" + activity.getId());
+            Uid uid = new Uid(activity.getMail() + "-" + activity.getEventId());
             event.getProperties().add(uid);
             event.getProperties().add(new Location(activity.getRoom()));
             calendar.getComponents().add(event);
@@ -94,7 +94,7 @@ public class ActivityController {
         return ResponseEntity.ok(calendar.toString());
     }
 
-    @DeleteMapping("/activity/{userMail}/{id}")
+    @DeleteMapping("/{userMail}/{id}")
     @Operation(summary = "Delete a registration from the database", parameters = {
             @Parameter(name = "userMail", description = "User mail", required = true),
             @Parameter(name = "id", description = "Registration ID", required = true)
