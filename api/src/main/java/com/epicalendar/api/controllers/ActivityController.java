@@ -19,6 +19,9 @@ import net.fortuna.ical4j.model.property.Uid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,16 +48,27 @@ public class ActivityController {
     }
 
     @GetMapping("/{userMail}")
-    @Operation(summary = "Get all registrations for a user, parameters", parameters = {
-            @Parameter(name = "userMail", description = "User mail", required = true)
+    @Operation(summary = "Get all registrations for a specific period", parameters = {
+            @Parameter(name = "userMail", description = "User mail", required = true),
+            @Parameter(name = "start", description = "Start date (yyyy-mm-dd)", required = true),
+            @Parameter(name = "end", description = "End date (yyyy-mm-dd)", required = true)
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registration found", content = {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = int.class)))
-            })
+            }),
+            @ApiResponse(responseCode = "404", description = "Registration not found", content = @Content)
     })
-    public ResponseEntity<List<Integer>> getActivities(@PathVariable String userMail) {
-        List<Activity> activities = activityRepository.findAllByMail(userMail);
+    public ResponseEntity<List<Integer>> getActivities(@PathVariable String userMail, @RequestParam String start, @RequestParam String end) {
+        Date startDate;
+        Date endDate;
+        try {
+            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+            endDate = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+        } catch (ParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Activity> activities = activityRepository.findAllByMailAndStartDateAfterAndEndDateBefore(userMail, startDate, endDate);
         if (activities.isEmpty())
             return ResponseEntity.ok(List.of());
         return ResponseEntity.ok(activities.stream().map(Activity::getEventId).collect(Collectors.toList()));
