@@ -102,14 +102,14 @@ public class ActivityController {
     @DeleteMapping("/{userMail}/{id}")
     @Operation(summary = "Delete a registration from the database", parameters = {
             @Parameter(name = "userMail", description = "User mail", required = true),
-            @Parameter(name = "id", description = "Registration ID", required = true)
+            @Parameter(name = "id", description = "Event ID", required = true)
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registration deleted", content = @Content),
             @ApiResponse(responseCode = "404", description = "Registration not found", content = @Content)
     })
     public ResponseEntity<Void> deleteActivity(@PathVariable String userMail, @PathVariable int id) {
-        Activity activity = activityRepository.findByIdAndMail(id, userMail);
+        Activity activity = activityRepository.findByEventIdAndMail(id, userMail);
         if (activity == null)
             return ResponseEntity.notFound().build();
         activityRepository.delete(activity);
