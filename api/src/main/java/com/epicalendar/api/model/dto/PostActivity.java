@@ -3,14 +3,14 @@ package com.epicalendar.api.model.dto;
 import java.util.Date;
 
 public class PostActivity {
-    private final int eventId;
+    private final long eventId;
     private final String mail;
     private final String title;
     private final String room;
-    private final Date startDate;
-    private final Date endDate;
+    private final long startDate;
+    private final long endDate;
 
-    public PostActivity(int eventId, String mail, String title, String room, Date startDate, Date endDate) {
+    public PostActivity(long eventId, String mail, String title, String room, long startDate, long endDate) {
         this.eventId = eventId;
         this.mail = mail;
         this.title = title;
@@ -19,7 +19,7 @@ public class PostActivity {
         this.endDate = endDate;
     }
 
-    public int getEventId() {
+    public long getEventId() {
         return eventId;
     }
 
@@ -36,10 +36,10 @@ public class PostActivity {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return new Date(startDate);
     }
 
     public Date getEndDate() {
-        return endDate;
+        return new Date(endDate);
     }
 }
