@@ -69,4 +69,12 @@ public class Activity {
     public Date getEndDate() {
         return endDate;
     }
+
+    public void update(PostActivity activity) {
+        this.mail = activity.getMail();
+        this.title = activity.getTitle();
+        this.room = activity.getRoom();
+        this.startDate = new Date(activity.getStartDate());
+        this.endDate = new Date(activity.getEndDate());
+    }
 }

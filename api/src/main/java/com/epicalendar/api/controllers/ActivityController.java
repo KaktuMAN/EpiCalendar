@@ -40,11 +40,18 @@ public class ActivityController {
     @PostMapping("/")
     @Operation(summary = "Add a new registration to the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = PostActivity.class))))
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Registration added", content = @Content(schema = @Schema(implementation = int.class))),
+            @ApiResponse(responseCode = "200", description = "Registration added", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
-    public ResponseEntity<Integer> addActivity(@RequestBody PostActivity activity) {
-        return ResponseEntity.ok(activityRepository.save(new Activity(activity)).getId());
+    public ResponseEntity<Void> addActivity(@RequestBody PostActivity activity) {
+        Activity prevActivity = activityRepository.findByEventIdAndMail(activity.getEventId(), activity.getMail());
+        if (prevActivity != null) {
+            prevActivity.update(activity);
+            activityRepository.save(prevActivity);
+        } else {
+            activityRepository.save(new Activity(activity));
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{userMail}")
