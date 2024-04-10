@@ -43,7 +43,7 @@ public class ActivityController {
             @ApiResponse(responseCode = "200", description = "Registration added", content = @Content(schema = @Schema(implementation = int.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
-    public ResponseEntity<Integer> addActivity(PostActivity activity) {
+    public ResponseEntity<Integer> addActivity(@RequestBody PostActivity activity) {
         return ResponseEntity.ok(activityRepository.save(new Activity(activity)).getId());
     }
 
