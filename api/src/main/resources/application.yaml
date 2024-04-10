@@ -4,6 +4,6 @@ spring:
       ddl-auto: none
     open-in-view: false
   datasource:
-    url: jdbc:postgresql://${POSTGRES_IP}:${POSTGRES_PORT}/epicalendar
+    url: jdbc:postgresql://${POSTGRES_IP}:5432/epicalendar
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
