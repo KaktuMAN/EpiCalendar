@@ -44,21 +44,19 @@ public class ActivityController {
     }
 
     @GetMapping("/{userMail}")
-    @Operation(summary = "Get all registrations for a user in a given time frame", parameters = {
+    @Operation(summary = "Get all registrations for a user, parameters", parameters = {
             @Parameter(name = "userMail", description = "User mail", required = true)
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registration found", content = {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = int.class)))
-            }),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Registrations not found", content = @Content)
+            })
     })
     public ResponseEntity<List<Integer>> getActivities(@PathVariable String userMail) {
         List<Activity> activities = activityRepository.findAllByMail(userMail);
         if (activities.isEmpty())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(activities.stream().map(Activity::getId).collect(Collectors.toList()));
+            return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(activities.stream().map(Activity::getEventId).collect(Collectors.toList()));
     }
 
     @GetMapping("/{userMail}/ical")
