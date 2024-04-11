@@ -9,14 +9,14 @@ browser.pageAction.onClicked.addListener(async (tab) => {
     await navigator.clipboard.writeText(`https://apicalendar.pechart.fr/ical/${data.login}`);
     browser.notifications.create({
       "type": "basic",
-      "iconUrl": browser.extension.getURL("favicon.ico"),
+      "iconUrl": browser.runtime.getURL("favicon.ico"),
       "title": "EpiCalendar",
       "message": "Your calendar link has been copied to your clipboard."
     });
   } else {
     browser.notifications.create({
       "type": "basic",
-      "iconUrl": browser.extension.getURL("favicon.ico"),
+      "iconUrl": browser.runtime.getURL("favicon.ico"),
       "title": "EpiCalendar",
       "message": "You need to be connected to the Epitech intranet to use this feature."
     });
