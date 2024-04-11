@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS activities (
     event_id int NOT NULL,
     mail varchar(128) NOT NULL,
     title varchar(256) NOT NULL,
-    room varchar(128) NOT NULL,
+    room varchar(128),
     start_date timestamp NOT NULL,
     end_date timestamp NOT NULL
 );

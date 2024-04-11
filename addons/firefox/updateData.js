@@ -30,7 +30,7 @@ async function main() {
       "eventId": 0,
       "mail": "string",
       "title": "string",
-      "room": "string",
+      "room": null,
       "startDate": "string",
       "endDate": "string"
     }
@@ -50,11 +50,12 @@ async function main() {
         }
       }
       if (activity.room === null || !activity.room.code || activity.room.code.split('/').length === 0)
-        return
+        finalData.room = null;
+      else
+        finalData.room = activity.room.code.split('/').slice(-1)[0].replace("-", "").replaceAll("-", " ");
       finalData.eventId = parseInt(activity.codeevent.replace("event-", ""));
       finalData.mail = login;
       finalData.title = activity.acti_title;
-      finalData.room = activity.room.code.split('/').slice(-1)[0].replace("-", "").replaceAll("-", " ");
       finalData.startDate = activityStart.getTime();
       finalData.endDate = activityEnd.getTime();
       newSubs.push(finalData.eventId);
