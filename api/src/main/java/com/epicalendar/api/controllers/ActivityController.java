@@ -14,8 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -100,7 +99,8 @@ public class ActivityController {
             VEvent event = new VEvent(startDate, endDate, activity.getTitle());
             Uid uid = new Uid(activity.getMail() + "-" + activity.getEventId());
             event.getProperties().add(uid);
-            event.getProperties().add(new Location(activity.getRoom()));
+            if (activity.getRoom() != null)
+                event.getProperties().add(new Location(activity.getRoom()));
             calendar.getComponents().add(event);
         });
         return ResponseEntity.ok(calendar.toString());
