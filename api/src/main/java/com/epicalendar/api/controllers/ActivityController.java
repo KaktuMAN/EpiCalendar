@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "https://intra.epitech.eu")
+@CrossOrigin(origins = "*")
 @Tag(name = "Activity", description = "Activity API")
 @RestController
 @RequestMapping("/activity")
