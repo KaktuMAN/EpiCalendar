@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "EpiCalendar",
+  "version": "1.0",
+  "description": "Retrieves the events you are registered to on the Epitech intranet and displays them in a calendar format.",
+  "homepage_url": "https://github.com/KaktuMAN/EpiCalendar",
+  "icons": {
+    "32": "favicon.ico"
+  },
+  "permissions": [
+    "https://intra.epitech.eu/",
+    "https://apicalendar.pechart.fr/",
+    "cookies",
+    "notifications",
+    "tabs"
+  ],
+  "background": {
+    "scripts": ["background.js", "updateData.js"]
+  },
+  "page_action": {
+    "default_icon": "favicon.ico",
+    "default_title": "Copy the EpiCalendar (ICal) link"
+  }
+}
