@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -25,9 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
-@Tag(name = "Activity", description = "Activity API")
 @RestController
-@RequestMapping("/activity")
+@RequestMapping("/")
 public class ActivityController {
 
     private final ActivityRepository activityRepository;
