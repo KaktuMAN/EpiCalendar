@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class ActivityController {
 
     private final ActivityRepository activityRepository;
