@@ -78,7 +78,7 @@ public class ActivityController {
         return ResponseEntity.ok(activities.stream().map(Activity::getEventId).collect(Collectors.toList()));
     }
 
-    @GetMapping("/{userMail}/ical")
+    @GetMapping("/ical/{userMail}")
     @Operation(summary = "Get an iCal file with all registrations for a user", parameters = {
             @Parameter(name = "userMail", description = "User mail", required = true)
     })
