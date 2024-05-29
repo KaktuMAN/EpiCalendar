@@ -2,11 +2,15 @@ package com.epicalendar.api.model;
 
 import com.epicalendar.api.model.dto.PostActivity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "activities")
+@Getter
+@NoArgsConstructor
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +34,6 @@ public class Activity {
     @Column(name = "end_date")
     private Date endDate;
 
-    public Activity() {
-    }
-
     public Activity(PostActivity activity) {
         this.eventId = activity.getEventId();
         this.mail = activity.getMail();
@@ -40,34 +41,6 @@ public class Activity {
         this.room = activity.getRoom();
         this.startDate = new Date(activity.getStartDate());
         this.endDate = new Date(activity.getEndDate());
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getEventId() {
-        return eventId;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
     }
 
     public void update(PostActivity activity) {
