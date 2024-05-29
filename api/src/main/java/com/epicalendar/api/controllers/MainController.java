@@ -1,8 +1,13 @@
 package com.epicalendar.api.controllers;
 
 import com.epicalendar.api.model.Activity;
+import com.epicalendar.api.model.Module;
+import com.epicalendar.api.model.ModuleSubscription;
 import com.epicalendar.api.model.dto.PostActivity;
+import com.epicalendar.api.model.dto.PostModuleSubscription;
 import com.epicalendar.api.repository.ActivityRepository;
+import com.epicalendar.api.repository.ModuleRepository;
+import com.epicalendar.api.repository.ModuleSubscriptionRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,12 +31,16 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
-public class ActivityController {
+public class MainController {
 
     private final ActivityRepository activityRepository;
+    private final ModuleRepository moduleRepository;
+    private final ModuleSubscriptionRepository moduleSubscriptionRepository;
 
-    public ActivityController(ActivityRepository activityRepository) {
+    public MainController(ActivityRepository activityRepository, ModuleRepository moduleRepository, ModuleSubscriptionRepository moduleSubscriptionRepository) {
         this.activityRepository = activityRepository;
+        this.moduleRepository = moduleRepository;
+        this.moduleSubscriptionRepository = moduleSubscriptionRepository;
     }
 
     @PostMapping("/")
@@ -48,6 +57,26 @@ public class ActivityController {
         } else {
             activityRepository.save(new Activity(activity));
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/module")
+    @Operation(summary = "Add a new registration to the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = PostModuleSubscription.class))))
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Registration added", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    })
+    public ResponseEntity<Void> addModuleSubscription(@RequestBody PostModuleSubscription moduleSubscription) {
+        Module module = moduleRepository.findByCode(moduleSubscription.getModuleCode());
+        if (module == null)
+            module = new Module(moduleSubscription.getModuleCode(), moduleSubscription.getYear());
+        ModuleSubscription subscription = new ModuleSubscription(moduleSubscription, module);
+        if (module.getModuleSubscriptions() == null)
+            module.setModuleSubscriptions(List.of(subscription));
+        else
+            module.getModuleSubscriptions().add(subscription);
+        moduleRepository.save(module);
+        moduleSubscriptionRepository.save(subscription);
         return ResponseEntity.ok().build();
     }
 
@@ -100,6 +129,32 @@ public class ActivityController {
             if (activity.getRoom() != null)
                 event.getProperties().add(new Location(activity.getRoom()));
             calendar.getComponents().add(event);
+        });
+        return ResponseEntity.ok(calendar.toString());
+    }
+
+    @GetMapping("/ical/{userMail}/projects")
+    @Operation(summary = "Get an iCal file with all your projects", parameters = {
+            @Parameter(name = "userMail", description = "User mail", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "iCal file found", content = @Content(mediaType = "text/calendar")),
+            @ApiResponse(responseCode = "404", description = "iCal file not found", content = @Content)
+    })
+    public ResponseEntity<String> getProjectsICal(@PathVariable String userMail) {
+        List<Module> modules = moduleRepository.findAllByModuleSubscriptionsMail(userMail);
+        if (modules.isEmpty())
+            return ResponseEntity.notFound().build();
+        Calendar calendar = new Calendar().withProdId("-//EpiCalendar 1.0//EN").withDefaults().getFluentTarget();
+        modules.forEach(module -> {
+            module.getProjects().forEach(project -> {
+                DateTime startDate = new DateTime(project.getStartDate());
+                DateTime endDate = new DateTime(project.getEndDate());
+                VEvent event = new VEvent(startDate, endDate, project.getTitle());
+                Uid uid = new Uid("projects-" + project.getId());
+                event.getProperties().add(uid);
+                calendar.getComponents().add(event);
+            });
         });
         return ResponseEntity.ok(calendar.toString());
     }
