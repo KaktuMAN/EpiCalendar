@@ -70,6 +70,8 @@ public class MainController {
         Module module = moduleRepository.findByCode(moduleSubscription.getModuleCode());
         if (module == null)
             module = new Module(moduleSubscription.getModuleCode(), moduleSubscription.getYear());
+        if (module.getModuleSubscriptions() != null && module.getModuleSubscriptions().stream().anyMatch(sub -> sub.getMail().equals(moduleSubscription.getMail())))
+            return ResponseEntity.ok().build();
         ModuleSubscription subscription = new ModuleSubscription(moduleSubscription, module);
         if (module.getModuleSubscriptions() == null)
             module.setModuleSubscriptions(List.of(subscription));
